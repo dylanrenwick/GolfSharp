@@ -19,7 +19,7 @@ literal <LiteralToken>
 bool <bool>
 	= 'true' { true }
 	/ 'false' { false }
-string = '"' chrs:[^"]* '"' { string.Concat(chrs) }
+string = '"' chrs:[^"]* ('"' / EOF) { string.Concat(chrs) }
 number <float>
 	= '-' n:num { n * -1 }
 	/ n:num { n }
@@ -27,3 +27,5 @@ num <float>
 	= left:digits right:('.' digits?)? { float.Parse(left + "." + (right.Count > 1 ? right[1] : "0")) }
 	/ '.' right:digits { float.Parse("0." + right) }
 digits = d:[0-9]+ { string.Concat(d) }
+
+EOF = !. / c:. #ERROR{ "Unexpected '" + c + "'" }
