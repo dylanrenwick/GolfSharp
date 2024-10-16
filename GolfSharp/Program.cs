@@ -4,8 +4,8 @@ public static class Program
 {
     private static readonly Dictionary<string, Command> _commandMappings = new()
     {
-        ["w"] = new AliasCommand("Console.WriteLine", ExpressionType.Void, [ExpressionType.String]),
-        ["#"] = new AliasCommand("Enumerable.Range", ExpressionType.Float.ArrayOf(), [ExpressionType.Float, ExpressionType.Float]),
+        ["w"] = new AliasCommand("System.Console.WriteLine", ExpressionType.Void, [ExpressionType.String]),
+        ["#"] = new AliasCommand("System.Linq.Enumerable.Range", ExpressionType.Float.ArrayOf(), [ExpressionType.Float, ExpressionType.Float]),
 
     };
 
