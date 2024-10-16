@@ -3,6 +3,7 @@
 public class Parser
 {
     private readonly Dictionary<string, Command> _commandMappings;
+    private ExpressionNode? _parentContext;
 
     public Parser(Dictionary<string, Command> commandMappings)
     {
@@ -11,6 +12,7 @@ public class Parser
 
     public ExpressionNode Parse(ExpressionToken rootToken)
     {
+        _parentContext = null;
         ExpressionNode firstPass = NodeFromToken(rootToken);
         return ResolveCommands(firstPass);
     }
@@ -49,19 +51,42 @@ public class Parser
 
     private ExpressionNode ResolveCommands(ExpressionNode node)
     {
-        return node switch
+        if (node is UnresolvedCommandNode cmd)
         {
-            UnresolvedCommandNode cmd => ResolveCommand(cmd),
-            _ => node,
-        };
+            _parentContext = cmd;
+            return ResolveCommand(cmd, out var extraNodes);
+        }
+
+        return node;
     }
 
-    private ResolvedCommandNode ResolveCommand(UnresolvedCommandNode cmd)
+    private ResolvedCommandNode ResolveCommand(UnresolvedCommandNode cmd, out IEnumerable<ExpressionNode> extraNodes)
     {
         var args = cmd.Args.Select(ResolveCommands).ToList();
         if (!_commandMappings.TryGetValue(cmd.CommandName, out Command? command))
             throw new InvalidOperationException($"Unknown command: {cmd.CommandName}");
+
+        if (args.Count < command.ArgCount)
+            throw new InvalidOperationException($"Not enouth args for command {cmd.CommandName} expected {command.ArgCount} got {args.Count}");
+
+        extraNodes = args.Skip(command.ArgCount).ToList();
+        args = args.Take(command.ArgCount).ToList();
+        for (int i = 0; i < command.ArgCount; i++)
+        {
+            var expected = command.ArgTypes[i];
+            var actual = args[i].ResultType;
+            if (expected != actual)
+                args[i] = ReconcileType(args[i], expected);
+        }
+
         return new ResolvedCommandNode(cmd.CommandName, args, command);
+    }
+
+    private ExpressionNode ReconcileType(ExpressionNode node, ExpressionType expectedType)
+    {
+        if (node.ResultType == expectedType)
+            return node;
+        throw new InvalidCastException($"Could not convert type {node.ResultType} to {expectedType}");
     }
 }
 
