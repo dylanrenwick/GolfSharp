@@ -6,7 +6,7 @@ public static class Program
     {
         ["w"] = new AliasCommand("System.Console.WriteLine", ExpressionType.Void, [ExpressionType.String]),
         ["#"] = new AliasCommand("System.Linq.Enumerable.Range", ExpressionType.Float.ArrayOf(), [ExpressionType.Float, ExpressionType.Float]),
-
+        ["i"] = new AliasCommand("System.Console.ReadLine", ExpressionType.String, []),
     };
 
     public static void Main(string[] args)
