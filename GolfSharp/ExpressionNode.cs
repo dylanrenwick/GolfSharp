@@ -1,11 +1,13 @@
-﻿namespace GolfSharp;
+﻿using System.Numerics;
+
+namespace GolfSharp;
 
 public abstract record class ExpressionNode
 {
     public virtual ExpressionType ResultType => ExpressionType.Unknown;
 }
 
-public readonly struct ExpressionType
+public readonly struct ExpressionType : IEqualityOperators<ExpressionType, ExpressionType, bool>
 {
     private static readonly string[] TypeNames = { "void", "unknown", "string", "bool", "float" };
     private static int ValFromName(string name) => Array.IndexOf(TypeNames, name.ToLower());
@@ -31,6 +33,16 @@ public readonly struct ExpressionType
     public override string ToString()
     {
         return $"{NameFromVal(_value)}{(IsArray ? "[]" : "")}";
+    }
+
+    public static bool operator ==(ExpressionType left, ExpressionType right)
+    {
+        return left._value == right._value && left.IsArray == right.IsArray;
+    }
+
+    public static bool operator !=(ExpressionType left, ExpressionType right)
+    {
+        return !(left == right);
     }
 }
 
