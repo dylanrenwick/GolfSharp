@@ -2,7 +2,9 @@
 @classname Tokenizer
 @using System.Linq
 
-program <ExpressionToken> = expr
+program <ExpressionToken>
+	= '{' exprs:expr+ ('}' / EOF) { new BlockToken(exprs.ToList()) }
+	/ expr
 
 expr <ExpressionToken>
 	= left:arg op:ident right:arg { new CommandToken(op, new List<ExpressionToken>() { left, right }) }

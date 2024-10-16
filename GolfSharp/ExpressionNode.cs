@@ -2,9 +2,22 @@
 
 namespace GolfSharp;
 
+public interface IParentNode
+{
+    public void Add(ExpressionNode child);
+    public void AddRange(IEnumerable<ExpressionNode> children);
+}
 public abstract record class ExpressionNode
 {
     public virtual ExpressionType ResultType => ExpressionType.Unknown;
+}
+
+public record class BlockNode(List<ExpressionNode> Nodes) : ExpressionNode, IParentNode
+{
+    public override ExpressionType ResultType => Nodes.Count > 0 ? Nodes[0].ResultType : ExpressionType.Void;
+
+    public void Add(ExpressionNode child) => Nodes.Add(child);
+    public void AddRange(IEnumerable<ExpressionNode> children) => Nodes.AddRange(children);
 }
 
 public readonly struct ExpressionType : IEqualityOperators<ExpressionType, ExpressionType, bool>

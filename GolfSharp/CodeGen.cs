@@ -24,6 +24,15 @@ public class CodeGen
             case ResolvedCommandNode cmd:
                 GenerateCommand(cmd);
                 break;
+            case BlockNode block:
+                _buffer.Append("()=>{");
+                foreach (var child in block.Nodes)
+                {
+                    GenerateExpression(child);
+                    _buffer.Append(';');
+                }
+                _buffer.Append("}()");
+                break;
             default:
                 throw new InvalidOperationException($"Unknown expression type: {node.GetType()}");
         };
