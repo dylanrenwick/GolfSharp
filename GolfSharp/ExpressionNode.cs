@@ -29,6 +29,8 @@ public readonly struct ExpressionType : IEqualityOperators<ExpressionType, Expre
     }
 
     public ExpressionType ArrayOf() => new(_value, true);
+    public bool IsArrayOf(ExpressionType other)
+        => other._value == _value && IsArray && !other.IsArray;
 
     public override string ToString()
     {
