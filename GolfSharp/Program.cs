@@ -22,15 +22,15 @@ public static class Program
     };
     private static readonly Dictionary<string, string> _commandAliases = new()
     {
-        ["w"] = "writeLine",
+        ["_"] = "writeLine",
         ["#"] = "range",
-        ["i"] = "readLine",
+        ["."] = "readLine",
     };
 
     public static void Main(string[] args)
     {
         Tokenizer tokenizer = new();
-        var result = tokenizer.Parse("{w\"Hello, World!\"");
+        var result = tokenizer.Parse("{_\"Hello, World!\"");
         Parser parser = new(_commands, _commandAliases);
         var node = parser.Parse(result);
         CodeGen gen = new();

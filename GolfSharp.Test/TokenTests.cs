@@ -8,7 +8,7 @@ public class TokenTests
     public void HelloWorld()
     {
         Tokenizer tokenizer = new();
-        var result = tokenizer.Parse("w\"Hello, World!");
+        var result = tokenizer.Parse("_\"Hello, World!");
 
         Assert.IsType<CommandToken>(result);
         var command = (CommandToken)result;
