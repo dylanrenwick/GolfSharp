@@ -2,13 +2,13 @@ namespace GolfSharp.Test;
 
 using GolfSharp;
 
-public class UnitTest1
+public class TokenTests
 {
     [Fact]
     public void HelloWorld()
     {
         Tokenizer tokenizer = new();
-        var result = tokenizer.Parse("w\"Hello, World!\"");
+        var result = tokenizer.Parse("w\"Hello, World!");
 
         Assert.IsType<CommandToken>(result);
         var command = (CommandToken)result;
@@ -25,7 +25,7 @@ public class UnitTest1
     public void SimpleRange()
     {
         Tokenizer tokenizer = new();
-        var result = tokenizer.Parse("#1,10");
+        var result = tokenizer.Parse("1#10");
 
         Assert.IsType<CommandToken>(result);
         var command = (CommandToken)result;
