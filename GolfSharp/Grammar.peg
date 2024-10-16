@@ -1,0 +1,29 @@
+﻿@namespace GolfSharp
+@classname Tokenizer
+@using System.Linq
+
+program <ExpressionToken> = expr
+
+expr <ExpressionToken>
+	= left:arg op:ident right:arg { new CommandToken(op, new List<ExpressionToken>() { left, right }) }
+	/ arg
+arg <ExpressionToken>
+	= name:ident args:arg<0,,','> { new CommandToken(name, args.ToList()) }
+	/ literal
+ident = chrs:[^0-9 \t\n,'"]+ { string.Concat(chrs) }
+
+literal <LiteralToken>
+	= o:bool { new LiteralToken(o, typeof(bool)) }
+	/ o:string { new LiteralToken(o, typeof(string)) }
+	/ o:number { new LiteralToken(o, typeof(float)) }
+bool <bool>
+	= 'true' { true }
+	/ 'false' { false }
+string = '"' chrs:[^"]* '"' { string.Concat(chrs) }
+number <float>
+	= '-' n:num { n * -1 }
+	/ n:num { n }
+num <float>
+	= left:digits right:('.' digits?)? { float.Parse(left + "." + (right.Count > 1 ? right[1] : "0")) }
+	/ '.' right:digits { float.Parse("0." + right) }
+digits = d:[0-9]+ { string.Concat(d) }

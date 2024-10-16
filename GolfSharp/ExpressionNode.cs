@@ -1,0 +1,36 @@
+﻿namespace GolfSharp;
+
+public abstract record class ExpressionNode
+{
+    public virtual ExpressionType ResultType => ExpressionType.Unknown;
+}
+
+public readonly struct ExpressionType
+{
+    private static readonly string[] TypeNames = { "void", "unknown", "string", "bool", "float" };
+    private static int ValFromName(string name) => Array.IndexOf(TypeNames, name.ToLower());
+    private static string NameFromVal(int val) => TypeNames[val];
+
+    public static readonly ExpressionType Void = new(ValFromName("void"));
+    public static readonly ExpressionType Unknown = new(ValFromName("unknown"));
+    public static readonly ExpressionType String = new(ValFromName("string"));
+    public static readonly ExpressionType Bool = new(ValFromName("bool"));
+    public static readonly ExpressionType Float = new(ValFromName("float"));
+
+    public readonly bool IsArray;
+    private readonly int _value;
+
+    private ExpressionType(int value, bool isArray = false)
+    {
+        _value = value;
+        IsArray = isArray;
+    }
+
+    public ExpressionType ArrayOf() => new(_value, true);
+
+    public override string ToString()
+    {
+        return $"{NameFromVal(_value)}{(IsArray ? "[]" : "")}";
+    }
+}
+
