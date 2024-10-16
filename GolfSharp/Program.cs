@@ -9,6 +9,10 @@ public static class Program
         ["readLine"] = new AliasCommand("System.Console.ReadLine", ExpressionType.String, []),
 
         ["convert_toString"] = new AliasCommand("System.Convert.ToString", ExpressionType.String, [ExpressionType.Unknown]),
+        ["convert_FloattoBool"] = new AliasCommand("(n=>n!=0)", ExpressionType.Bool, [ExpressionType.Float]),
+        ["convert_StringtoBool"] = new AliasCommand("System.String.IsNullOrEmpty", ExpressionType.Bool, [ExpressionType.String]),
+        ["convert_StringtoFloat"] = new AliasCommand("System.Single.Parse", ExpressionType.Float, [ExpressionType.String]),
+        ["convert_BooltoFloat"] = new AliasCommand("(n=>n?1:0)", ExpressionType.Float, [ExpressionType.Bool]),
     };
     private static readonly Dictionary<string, string> _commandAliases = new()
     {
