@@ -2,18 +2,27 @@
 
 public static class Program
 {
-    private static readonly Dictionary<string, Command> _commandMappings = new()
+    private static readonly Dictionary<string, Command> _commands = new()
     {
-        ["w"] = new AliasCommand("System.Console.WriteLine", ExpressionType.Void, [ExpressionType.String]),
-        ["#"] = new AliasCommand("System.Linq.Enumerable.Range", ExpressionType.Float.ArrayOf(), [ExpressionType.Float, ExpressionType.Float]),
-        ["i"] = new AliasCommand("System.Console.ReadLine", ExpressionType.String, []),
+        ["writeLine"] = new AliasCommand("System.Console.WriteLine", ExpressionType.Void, [ExpressionType.String]),
+        ["range"] = new AliasCommand("System.Linq.Enumerable.Range", ExpressionType.Float.ArrayOf(), [ExpressionType.Float, ExpressionType.Float]),
+        ["readLine"] = new AliasCommand("System.Console.ReadLine", ExpressionType.String, []),
+
+        ["convert_toString"] = new AliasCommand("System.Convert.ToString", ExpressionType.String, [ExpressionType.Unknown]),
     };
+    private static readonly Dictionary<string, string> _commandAliases = new()
+    {
+        ["w"] = "writeLine",
+        ["#"] = "range",
+        ["i"] = "readLine",
+    };
+
 
     public static void Main(string[] args)
     {
         Tokenizer tokenizer = new();
         var result = tokenizer.Parse("w\"Hello, World!\"");
-        Parser parser = new(_commandMappings);
+        Parser parser = new(_commands, _commandAliases);
         var node = parser.Parse(result);
         CodeGen gen = new();
         var code = gen.Generate(node);

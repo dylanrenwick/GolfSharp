@@ -2,12 +2,13 @@
 
 public class Parser
 {
-    private readonly Dictionary<string, Command> _commandMappings;
-    private ExpressionNode? _parentContext;
+    private readonly Dictionary<string, Command> _commands;
+    private readonly Dictionary<string, string> _commandAliases;
 
-    public Parser(Dictionary<string, Command> commandMappings)
+    public Parser(Dictionary<string, Command> commands, Dictionary<string, string> commandAliases)
     {
-        _commandMappings = commandMappings;
+        _commands = commands;
+        _commandAliases = commandAliases;
     }
 
     public ExpressionNode Parse(ExpressionToken rootToken)
@@ -62,9 +63,13 @@ public class Parser
 
     private ResolvedCommandNode ResolveCommand(UnresolvedCommandNode cmd, out IEnumerable<ExpressionNode> extraNodes)
     {
-        var args = cmd.Args.Select(ResolveCommands).ToList();
-        if (!_commandMappings.TryGetValue(cmd.CommandName, out Command? command))
+        if (!_commands.TryGetValue(cmd.CommandName, out Command? command))
+        {
+            if (!_commandAliases.TryGetValue(cmd.CommandName, out string? alias))
             throw new InvalidOperationException($"Unknown command: {cmd.CommandName}");
+            if (!_commands.TryGetValue(alias, out command))
+                throw new InvalidOperationException($"Unknown command: {cmd.CommandName}");
+        }
 
         if (args.Count < command.ArgCount)
             throw new InvalidOperationException($"Not enouth args for command {cmd.CommandName} expected {command.ArgCount} got {args.Count}");
