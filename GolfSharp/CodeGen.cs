@@ -9,9 +9,35 @@ public class CodeGen
     public string Generate(ExpressionNode node)
     {
         _buffer.Clear();
+        GenerateHeader();
         GenerateExpression(node);
-        _buffer.Append(';');
+        GenerateTrailer();
         return _buffer.ToString();
+    }
+
+    private void GenerateHeader()
+    {
+        _buffer.Append("""
+            class GolfSharp_Generated
+            {
+                public static Dictionary<string, object> _vars = new();
+
+                public static void Main(string[] args)
+                {
+                    Run();
+                }
+
+                private static void Run()
+                {
+            """);
+    }
+    private void GenerateTrailer()
+    {
+        _buffer.Append(';');
+        _buffer.Append("""
+                }
+            }
+            """);
     }
 
     private void GenerateExpression(ExpressionNode node)

@@ -19,6 +19,9 @@ public static class Program
         ["convert_StringtoBool"] = new AliasCommand("System.String.IsNullOrEmpty", ExpressionType.Bool, [ExpressionType.String]),
         ["convert_StringtoFloat"] = new AliasCommand("System.Single.Parse", ExpressionType.Float, [ExpressionType.String]),
         ["convert_BooltoFloat"] = new AliasCommand("(n=>n?1:0)", ExpressionType.Float, [ExpressionType.Bool]),
+
+        ["var_set"] = new AliasCommand("((n,v)=>{_vars[n]=v;return v;})", ExpressionType.Unknown, [ExpressionType.String, ExpressionType.Unknown]),
+        ["var_get"] = new AliasCommand("(n=>_vars[n])", ExpressionType.Unknown, [ExpressionType.String]),
     };
     private static readonly Dictionary<string, string> _commandAliases = new()
     {

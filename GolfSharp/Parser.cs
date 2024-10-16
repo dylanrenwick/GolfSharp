@@ -4,6 +4,7 @@ public class Parser
 {
     private readonly Dictionary<string, Command> _commands;
     private readonly Dictionary<string, string> _commandAliases;
+    private readonly HashSet<string> _definedVars = [];
 
     public Parser(Dictionary<string, Command> commands, Dictionary<string, string> commandAliases)
     {
@@ -13,6 +14,7 @@ public class Parser
 
     public ExpressionNode Parse(ExpressionToken rootToken)
     {
+        _definedVars.Clear();
         ExpressionNode firstPass = NodeFromToken(rootToken);
         return ResolveCommands(firstPass);
     }
@@ -87,9 +89,9 @@ public class Parser
         if (!_commands.TryGetValue(cmd.CommandName, out Command? command))
         {
             if (!_commandAliases.TryGetValue(cmd.CommandName, out string? alias))
-                throw new InvalidOperationException($"Unknown command: {cmd.CommandName}");
-            if (!_commands.TryGetValue(alias, out command))
-                throw new InvalidOperationException($"Unknown command: {cmd.CommandName}");
+                return HandleVariable(cmd, out extraNodes);
+            else if (!_commands.TryGetValue(alias, out command))
+                return HandleVariable(cmd, out extraNodes);
         }
 
         List<ExpressionNode> args = [];
@@ -152,6 +154,24 @@ public class Parser
         }
 
         return (selectedArgs, extraArgs);
+    }
+
+    private ResolvedCommandNode HandleVariable(UnresolvedCommandNode cmd, out IEnumerable<ExpressionNode> extraNodes)
+    {
+        bool isSetting = !_definedVars.Contains(cmd.CommandName);
+
+        string commandName = isSetting ? "var_set" : "var_get";
+        Command varCommand = GetSystemCommand(commandName);
+
+        List<ExpressionNode> args = [new StringNode(cmd.CommandName)];
+        if (isSetting)
+            args.Add(cmd.Args[0]);
+
+        extraNodes = isSetting
+            ? cmd.Args[1..]
+            : cmd.Args;
+
+        return new ResolvedCommandNode(commandName, args, varCommand);
     }
 
     private string? FindConversion(ExpressionType @in, ExpressionType @out)
