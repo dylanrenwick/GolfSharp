@@ -1,4 +1,4 @@
-﻿namespace GolfSharp;
+﻿namespace Par;
 
 public abstract record class Command(ExpressionType ResultType, ExpressionType[] ArgTypes)
 {

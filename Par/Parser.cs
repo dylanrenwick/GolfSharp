@@ -1,4 +1,4 @@
-﻿namespace GolfSharp;
+﻿namespace Par;
 
 public class Parser
 {

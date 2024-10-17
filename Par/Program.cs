@@ -1,4 +1,4 @@
-﻿namespace GolfSharp;
+﻿namespace Par;
 
 public static class Program
 {
@@ -28,6 +28,12 @@ public static class Program
         ["_"] = "writeLine",
         ["#"] = "range",
         ["."] = "readLine",
+
+        ["+"] = "add",
+        ["-"] = "sub",
+        ["*"] = "mul",
+        ["/"] = "div",
+        ["%"] = "mod",
     };
 
     public static void Main(string[] args)

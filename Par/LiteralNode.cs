@@ -1,4 +1,4 @@
-﻿namespace GolfSharp;
+﻿namespace Par;
 
 public abstract record class LiteralNode : ExpressionNode;
 public record class StringNode(string Value) : LiteralNode

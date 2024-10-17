@@ -1,4 +1,4 @@
-﻿namespace GolfSharp;
+﻿namespace Par;
 
 public abstract record class CommandNode(string CommandName, List<ExpressionNode> Args) : ExpressionNode;
 public record class UnresolvedCommandNode : CommandNode, IParentNode

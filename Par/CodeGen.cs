@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace GolfSharp;
+namespace Par;
 
 public class CodeGen
 {
@@ -18,7 +18,7 @@ public class CodeGen
     private void GenerateHeader()
     {
         _buffer.Append("""
-            class GolfSharp_Generated
+            class Par_Generated
             {
                 public static Dictionary<string, object> _vars = new();
 

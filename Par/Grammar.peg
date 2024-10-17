@@ -1,4 +1,4 @@
-﻿@namespace GolfSharp
+﻿@namespace Par
 @classname Tokenizer
 @using System.Linq
 
